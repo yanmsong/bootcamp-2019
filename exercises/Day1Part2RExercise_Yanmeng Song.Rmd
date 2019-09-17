@@ -1,0 +1,116 @@
+---
+title: "Rmd Exercise Template"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the data
+
+Load the `gapminder` dataset.
+
+```{r chunk name}
+gapminder <- read.csv(here::here("data/gapminder5.csv"), stringsAsFactors=FALSE)
+```
+
+## If Statement
+
+Use an if() statement to print a suitable message reporting whether there are any records from 2002 in the gapminder dataset. Now do the same for 2012.
+
+```{r}
+if (any(gapminder$year == 2002)) {
+   print(paste("Record(s) for the year", 2002, "found."))
+} else {
+  print(paste("No records for year", 2002))
+}
+
+if (any(gapminder$year == 2012)) {
+   print(paste("Record(s) for the year", 2012, "found."))
+} else {
+  print(paste("No records for year", 2012))
+}
+```
+
+## Loop and If Statements
+
+Write a script that finds the mean life expectancy by country for countries whose population is below the mean for the dataset
+
+```{r}
+countries = unique(gapminder$country)
+mean_pop = mean(gapminder$pop)
+for (i in countries) {
+    country_mean = mean(gapminder$pop[gapminder$country==i])
+    
+    if (country_mean < mean_pop) {
+        mean_le = mean(gapminder$lifeExp[gapminder$country==i])
+        print(paste("Mean Life Expectancy in", i, "is", mean_le))
+    }
+}
+```
+
+Write a script that loops through the `gapminder` data by continent and prints out whether the mean life expectancy is smaller than 50, between 50 and 70, or greater than 70.
+
+```{r}
+conts = unique(gapminder$continent)
+for (i in conts) {
+    mean_le = mean(gapminder$lifeExp[gapminder$continent==i])
+    if (mean_le < 50) {
+        print(paste("Mean Life Expectancy in", i, "is less than", 50))
+    }
+    else if (mean_le > 70) {
+        print(paste("Mean Life Expectancy in", i, "is greater than", 70))
+    }
+    else {
+        print(paste("Mean Life Expectancy in", i, "is between", 50, "and ", 70))
+    }
+}
+```
+
+## Exercise: Write Functions
+
+Create a function that given a data frame will print the name of each column and the class of data it contains. Use the gapminder dataset.  Hint: Use `mode()` or `class()` to get the class of the data in each column. Remember that `names()` or `colnames()` returns the name of the columns in a dataset.
+
+```{r}
+data_frame_info <- function(df) {
+  cols <- names(df)
+  for (i in cols) {
+    print(paste0(i, ": ", mode(df[, i])))
+  }
+}
+data_frame_info(gapminder)
+```
+
+Create a function that given a vector will print the mean and the standard deviation of a **vector**, it will optionally also print the median. Hint: include an argument that takes a boolean (`TRUE`/`FALSE`) operator and then include an `if` statement.
+
+```{r}
+vec_stats <- function(vec, operator) {
+    print(paste("Mean:", mean(vec)))
+    print(paste("Standard Deviation:", sd(vec)))
+    if (operator) {
+        print(paste("Median:", mean(vec)))
+    }
+}
+
+vector_info(gapminder$lifeExp, operator = F)
+vector_info(gapminder$lifeExp, operator = T)
+```
+
+## Analyzing the relationship 
+
+Use what you've learned so far to answer the following questions using the `gapminder` dataset. Be sure to include some visualizations!
+
+1. What is the relationship between GDP per capita and life expectancy? Does this relationship change over time? (Hint: Use the natural log of both variables.)
+
+```{r}
+plot(log(gapminder$gdpPercap), log(gapminder$lifeExp))
+```
+
+2. Does the relationship between GDP per capita and life expectacy vary by continent? Make sure you divide the Americas into North and South America.
+
+```{r}
+
+```
+
